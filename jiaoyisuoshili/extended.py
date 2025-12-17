@@ -275,16 +275,34 @@ class Extended:
         # 初始化标志
         self._initialized = False
     
-    async def initialize(self, start_orderbook_loop: bool = True):
+    async def initialize(self, start_orderbook_loop: bool = True, force_recreate: bool = False):
         """
         初始化交易客户端
         
         Args:
             start_orderbook_loop: 是否启动 OrderBook WebSocket 事件循环（默认 True）
                                  在测试连接时设置为 False，避免事件循环冲突
+            force_recreate: 是否强制重新创建 trading_client（默认 False）
+                           在测试连接时设置为 True，确保在新的事件循环中创建
         """
-        if not self._initialized or self.trading_client is None:
+        # 如果需要强制重新创建，或者 trading_client 不存在，则创建新的
+        if force_recreate or not self._initialized or self.trading_client is None:
+            # 如果强制重新创建，先清理旧的（如果有）
+            if force_recreate and self.trading_client is not None:
+                try:
+                    # 尝试清理旧的客户端（如果 SDK 支持）
+                    if hasattr(self.trading_client, 'close'):
+                        await self.trading_client.close()
+                    elif hasattr(self.trading_client, 'disconnect'):
+                        await self.trading_client.disconnect()
+                except Exception:
+                    pass  # 忽略清理错误
+                self.trading_client = None
+                self._initialized = False
+            
+            # 在新的事件循环中创建 trading_client
             self.trading_client = PerpetualTradingClient(self.config, self.stark_account)
+        
         # 获取市场信息
         try:
             markets_response = await self.trading_client.markets_info.get_markets()
