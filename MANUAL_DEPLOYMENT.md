@@ -67,7 +67,7 @@ scp -r /Volumes/Lenovo/python/wangge your_username@your_server_ip:/home/your_use
 
 ```bash
 cd ~
-git clone <your-repo-url> wangge
+git clone https://github.com/tianxingj2021/wangge.git wangge
 cd wangge
 ```
 
@@ -642,7 +642,10 @@ sudo systemctl stop wangge
 # 2. 更新代码（根据你的方式选择）
 # 方式A: Git
 cd ~/wangge
-git pull
+git pull origin main
+
+# 如果远程仓库地址不正确，先设置：
+# git remote set-url origin https://github.com/tianxingj2021/wangge.git
 
 # 方式B: 重新上传文件
 # 在本地执行 scp，然后在服务器上解压

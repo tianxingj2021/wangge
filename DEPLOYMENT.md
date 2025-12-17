@@ -68,7 +68,7 @@ sudo su - wangge
 
 ```bash
 cd ~
-git clone <your-repo-url> wangge
+git clone https://github.com/tianxingj2021/wangge.git wangge
 cd wangge
 ```
 
@@ -650,6 +650,16 @@ git pull origin main
 
 # 或重新上传文件
 # scp -r /path/to/wangge user@server:/home/wangge/
+```
+
+**注意**：如果仓库地址是 `https://github.com/tianxingj2021/wangge.git`，确保远程仓库已正确配置：
+
+```bash
+# 检查远程仓库地址
+git remote -v
+
+# 如果地址不正确，更新为：
+git remote set-url origin https://github.com/tianxingj2021/wangge.git
 ```
 
 ### 10.2 更新依赖
