@@ -216,8 +216,8 @@ async def test_exchange_connection(config: ExchangeConfig):
                     new_loop = asyncio.new_event_loop()
                     asyncio.set_event_loop(new_loop)
                     try:
-                        # 运行初始化
-                        new_loop.run_until_complete(exchange.extended_client.initialize())
+                        # 运行初始化（测试连接时不启动 OrderBook 事件循环，避免冲突）
+                        new_loop.run_until_complete(exchange.extended_client.initialize(start_orderbook_loop=False))
                         result_queue.put(('success', None))
                     except Exception as e:
                         # 捕获详细的错误信息

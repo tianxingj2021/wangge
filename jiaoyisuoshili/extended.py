@@ -275,8 +275,14 @@ class Extended:
         # 初始化标志
         self._initialized = False
     
-    async def initialize(self):
-        """初始化交易客户端"""
+    async def initialize(self, start_orderbook_loop: bool = True):
+        """
+        初始化交易客户端
+        
+        Args:
+            start_orderbook_loop: 是否启动 OrderBook WebSocket 事件循环（默认 True）
+                                 在测试连接时设置为 False，避免事件循环冲突
+        """
         if not self._initialized or self.trading_client is None:
             self.trading_client = PerpetualTradingClient(self.config, self.stark_account)
         # 获取市场信息
@@ -300,8 +306,9 @@ class Extended:
                     self.markets = {}
             raise  # 重新抛出异常，让调用者知道初始化过程中有问题
         
-        # 启动持久的事件循环用于 OrderBook WebSocket 连接
-        self._start_orderbook_event_loop()
+        # 启动持久的事件循环用于 OrderBook WebSocket 连接（仅在需要时）
+        if start_orderbook_loop:
+            self._start_orderbook_event_loop()
     
     def _start_orderbook_event_loop(self):
         """启动持久的事件循环用于 OrderBook WebSocket 连接"""
