@@ -13,7 +13,6 @@ Restart=always
 RestartSec=10
 StandardOutput=journal
 StandardError=journal
-ReadWritePaths=/root/wangge/logs
 
 [Install]
 WantedBy=multi-user.target

@@ -244,17 +244,17 @@ Restart=always
 RestartSec=10
 StandardOutput=journal
 StandardError=journal
-ReadWritePaths=/root/wangge/logs
 
 [Install]
 WantedBy=multi-user.target
 ```
 
-**注意**：
+**重要说明**：
 - 如果项目部署在其他路径，请修改 `WorkingDirectory` 和 `ExecStart` 中的路径
 - `Environment` 行不要使用引号，直接写 `PATH=/root/wangge/venv/bin`
 - 确保每行都有正确的键值对格式：`Key=Value`
 - 不要在 `[Service]` 和 `[Install]` 节之间添加注释
+- **已移除 `ReadWritePaths`**：对于 root 用户，此选项可能导致 NAMESPACE 错误（错误代码 226）
 
 ### 5.3 重载 Systemd 配置
 
@@ -279,13 +279,45 @@ systemctl enable wangge
 ```bash
 # 查看服务状态
 systemctl status wangge
+```
 
-# 查看日志
+**正常状态应该显示**：
+```
+● wangge.service - 网格交易系统
+   Loaded: loaded (/etc/systemd/system/wangge.service; enabled)
+   Active: active (running) since ...
+```
+
+### 5.7 验证服务运行
+
+```bash
+# 1. 测试健康检查端点
+curl http://localhost:8000/health
+
+# 应该返回：{"status":"ok","message":"服务运行正常"}
+
+# 2. 检查端口监听
+netstat -tulpn | grep 8000
+# 或使用 ss 命令
+ss -tulpn | grep 8000
+
+# 3. 查看应用日志
 journalctl -u wangge -f
 
-# 查看最近100行日志
+# 4. 查看最近100行日志
 journalctl -u wangge -n 100
 ```
+
+### 5.8 访问前端界面
+
+服务启动成功后，可以通过以下方式访问：
+
+- **本地访问**：`http://localhost:8000`
+- **远程访问**：`http://你的服务器IP:8000`
+- **API文档**：`http://你的服务器IP:8000/docs`
+- **健康检查**：`http://你的服务器IP:8000/health`
+
+**注意**：如果无法远程访问，请检查防火墙设置（见 [故障排查](#9-故障排查) 部分）。
 
 ### 5.7 常用服务管理命令
 
