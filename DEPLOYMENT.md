@@ -139,7 +139,9 @@ python -c "import fastapi, uvicorn; print('依赖安装成功')"
 
 ## 4. 配置文件设置
 
-### 4.1 创建 .env 文件
+### 4.1 创建 .env 文件（服务器运行配置）
+
+**重要说明**：交易所 API 密钥是通过前端界面配置的，不需要在 `.env` 文件中配置。`.env` 文件仅用于服务器运行配置。
 
 ```bash
 cd ~/wangge
@@ -148,53 +150,46 @@ cp .env.example .env  # 如果有示例文件
 nano .env
 ```
 
-### 4.2 配置 .env 文件
+### 4.2 配置 .env 文件（仅服务器配置）
 
-**Binance 配置示例：**
+`.env` 文件只需要配置服务器运行参数，**不需要配置交易所 API 密钥**：
 
 ```env
-# 交易所配置
-EXCHANGE_NAME=binance
-EXCHANGE_API_KEY=your_api_key_here
-EXCHANGE_SECRET_KEY=your_secret_key_here
-EXCHANGE_TESTNET=true
-
-# 服务器配置
+# 服务器配置（必填）
 API_HOST=0.0.0.0
 API_PORT=8000
 DEBUG=false
 LOG_LEVEL=INFO
 ```
 
-**Extended 配置示例：**
+**说明**：
+- `API_HOST`: 服务监听地址，通常为 `0.0.0.0`（允许外部访问）
+- `API_PORT`: 服务端口，默认 `8000`
+- `DEBUG`: 生产环境设置为 `false`
+- `LOG_LEVEL`: 日志级别，推荐 `INFO`
 
-```env
-# 交易所配置
-EXCHANGE_NAME=extended
-EXCHANGE_API_KEY=your_api_key_here
-EXCHANGE_SECRET_KEY=your_private_key_here
-EXCHANGE_PUBLIC_KEY=your_public_key_here
-EXCHANGE_VAULT=12345
-EXCHANGE_TESTNET=true
-
-# 服务器配置
-API_HOST=0.0.0.0
-API_PORT=8000
-DEBUG=false
-LOG_LEVEL=INFO
-```
-
-### 4.3 设置文件权限（保护敏感信息）
+### 4.3 设置文件权限
 
 ```bash
 chmod 600 .env
 ```
 
-### 4.4 配置交易所信息（如果使用 exchange_config.json）
+### 4.4 配置交易所信息（通过前端界面）
 
-```bash
-nano config/exchange_config.json
-```
+**交易所配置不需要手动创建文件**，系统会在首次通过前端界面配置时自动创建 `config/exchange_config.json`。
+
+**配置步骤**：
+1. 启动服务后，访问前端界面
+2. 进入"配置"页面
+3. 填写交易所信息（API 密钥、私钥等）
+4. 点击"保存配置"
+
+系统会自动将配置保存到 `config/exchange_config.json` 文件中。
+
+**注意**：如果服务器上已有 `config/exchange_config.json` 文件，请确保：
+- 文件权限正确：`chmod 644 config/exchange_config.json`
+- 文件格式正确（JSON 格式）
+- 包含有效的 API 密钥信息
 
 ---
 
