@@ -65,8 +65,32 @@ sudo yum install -y python3 python3-pip git curl wget
 
 ```bash
 cd ~
+
+# 如果目录已存在，先删除或重命名
+if [ -d "wangge" ]; then
+    echo "目录 wangge 已存在，正在备份..."
+    mv wangge wangge.backup.$(date +%Y%m%d_%H%M%S)
+fi
+
+# 克隆代码
 git clone https://github.com/tianxingj2021/wangge.git wangge
 cd wangge
+```
+
+**或者，如果目录已存在且想更新代码**：
+
+```bash
+cd ~/wangge
+# 如果已经是 Git 仓库，直接拉取更新
+if [ -d ".git" ]; then
+    git pull origin main
+else
+    # 如果不是 Git 仓库，先删除再克隆
+    cd ..
+    rm -rf wangge
+    git clone https://github.com/tianxingj2021/wangge.git wangge
+    cd wangge
+fi
 ```
 
 **方式2：使用 SCP 上传**
@@ -202,6 +226,8 @@ nano /etc/systemd/system/wangge.service
 
 ### 5.2 服务文件内容
 
+**重要**：请严格按照以下格式复制，不要添加额外的注释或空行。
+
 ```ini
 [Unit]
 Description=网格交易系统
@@ -212,21 +238,23 @@ Type=simple
 User=root
 Group=root
 WorkingDirectory=/root/wangge
-Environment="PATH=/root/wangge/venv/bin"
+Environment=PATH=/root/wangge/venv/bin
 ExecStart=/root/wangge/venv/bin/python /root/wangge/run.py
 Restart=always
 RestartSec=10
 StandardOutput=journal
 StandardError=journal
-
-# 日志路径
 ReadWritePaths=/root/wangge/logs
 
 [Install]
 WantedBy=multi-user.target
 ```
 
-**注意**：如果项目部署在其他路径，请修改 `WorkingDirectory` 和 `ExecStart` 中的路径。
+**注意**：
+- 如果项目部署在其他路径，请修改 `WorkingDirectory` 和 `ExecStart` 中的路径
+- `Environment` 行不要使用引号，直接写 `PATH=/root/wangge/venv/bin`
+- 确保每行都有正确的键值对格式：`Key=Value`
+- 不要在 `[Service]` 和 `[Install]` 节之间添加注释
 
 ### 5.3 重载 Systemd 配置
 

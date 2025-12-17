@@ -4,26 +4,16 @@ After=network.target
 
 [Service]
 Type=simple
-# 修改为你的用户名
-User=wangge
-Group=wangge
-# 修改为你的项目路径
-WorkingDirectory=/home/wangge/wangge
-Environment="PATH=/home/wangge/wangge/venv/bin"
-# 修改为你的项目路径
-ExecStart=/home/wangge/wangge/venv/bin/python /home/wangge/wangge/run.py
+User=root
+Group=root
+WorkingDirectory=/root/wangge
+Environment=PATH=/root/wangge/venv/bin
+ExecStart=/root/wangge/venv/bin/python /root/wangge/run.py
 Restart=always
 RestartSec=10
 StandardOutput=journal
 StandardError=journal
-
-# 安全设置
-NoNewPrivileges=true
-PrivateTmp=true
-ProtectSystem=strict
-ProtectHome=read-only
-ReadWritePaths=/home/wangge/wangge/logs
+ReadWritePaths=/root/wangge/logs
 
 [Install]
 WantedBy=multi-user.target
-
