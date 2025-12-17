@@ -25,14 +25,18 @@ class AiohttpWarningFilter:
                 setattr(self, attr, getattr(original_stderr, attr))
     
     def write(self, text):
-        # 过滤掉 aiohttp 相关的未关闭警告
+        # 过滤掉 aiohttp 相关的未关闭警告和 SSL 警告
         if any(keyword in text for keyword in [
             "Unclosed client session",
             "Unclosed connector",
             "Unclosed connection",
             "client_session:",
             "connector:",
-            "connections:"
+            "connections:",
+            "Future exception was never retrieved",
+            "APPLICATION_DATA_AFTER_CLOSE_NOTIFY",
+            "ClientOSError",
+            "[SSL: APPLICATION_DATA_AFTER_CLOSE_NOTIFY]"
         ]):
             return len(text)  # 返回长度但不实际写入
         return self.original_stderr.write(text)

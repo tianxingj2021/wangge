@@ -15,6 +15,9 @@ def setup_logger():
     # 这些警告来自 Extended SDK 内部，不影响功能
     warnings.filterwarnings("ignore", category=ResourceWarning)
     
+    # 抑制 asyncio 的 Future exception 警告
+    warnings.filterwarnings("ignore", message=".*Future exception was never retrieved.*")
+    
     # 移除默认处理器
     logger.remove()
     
