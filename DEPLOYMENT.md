@@ -51,12 +51,17 @@ sudo yum install -y python3 python3-pip git curl wget
 为了安全，建议创建一个专用用户来运行服务：
 
 ```bash
-# 创建用户
+# 创建用户（不需要设置密码，因为我们使用 sudo 切换）
 sudo useradd -m -s /bin/bash wangge
 
 # 切换到新用户
 sudo su - wangge
 ```
+
+**重要说明**：
+- `sudo` 命令需要输入的是**当前登录用户的密码**，不是 `wangge` 用户的密码
+- 如果当前用户没有 sudo 权限，需要先配置 sudo 权限，或使用 root 用户
+- `wangge` 用户不需要设置密码，因为我们通过 `sudo` 来切换用户
 
 ---
 
@@ -200,6 +205,12 @@ chmod 600 .env
 ```bash
 sudo nano /etc/systemd/system/wangge.service
 ```
+
+**重要提示**：
+- `sudo` 命令会要求输入密码，这里输入的是**当前登录用户的密码**，不是 `wangge` 用户的密码
+- 如果当前用户没有 sudo 权限，需要：
+  1. 使用 root 用户登录，或
+  2. 让管理员将当前用户添加到 sudo 组：`sudo usermod -aG sudo your_username`
 
 ### 5.2 服务文件内容
 

@@ -35,12 +35,18 @@ sudo yum install -y python3 python3-pip git curl wget
 ### 1.4 创建专用用户（推荐，更安全）
 
 ```bash
-# 创建用户
+# 创建用户（不需要设置密码）
 sudo useradd -m -s /bin/bash wangge
 
 # 切换到新用户
 sudo su - wangge
 ```
+
+**🔧 重要说明**：
+- `sudo` 命令需要输入的是**当前登录用户的密码**，不是 `wangge` 用户的密码
+- 如果当前用户没有 sudo 权限，需要先配置 sudo 权限，或使用 root 用户
+- `wangge` 用户不需要设置密码，因为我们通过 `sudo` 来切换用户
+- 如果你使用现有用户部署，可以跳过创建新用户这一步
 
 **🔧 注意**：如果你使用现有用户，请记住你的用户名，后面会用到。
 
@@ -317,6 +323,21 @@ curl http://localhost:8000/health
 ```bash
 sudo nano /etc/systemd/system/wangge.service
 ```
+
+**🔧 关于 sudo 密码的重要说明**：
+- `sudo` 命令需要输入的是**当前登录用户的密码**，不是 `wangge` 用户的密码
+- 例如：如果你用 `ubuntu` 用户登录，就输入 `ubuntu` 用户的密码
+- 如果你用 `root` 用户登录，不需要输入密码（root 用户有所有权限）
+- `wangge` 用户不需要设置密码，因为我们通过 `sudo` 来切换用户
+
+**🔧 如果当前用户没有 sudo 权限**：
+- 选项1：使用 root 用户登录（`su -` 或直接以 root 登录）
+- 选项2：让管理员将当前用户添加到 sudo 组：
+  ```bash
+  # 管理员执行（或使用 root）
+  sudo usermod -aG sudo your_username
+  # 然后重新登录
+  ```
 
 ### 8.2 服务文件内容
 
