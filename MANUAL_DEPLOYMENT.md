@@ -156,63 +156,47 @@ python -c "import fastapi, uvicorn; print('依赖安装成功')"
 
 ---
 
-## 第五步：配置环境变量（重要！）
+## 第五步：配置环境变量
 
-### 5.1 创建 .env 文件
+### 5.1 创建 .env 文件（仅服务器配置）
+
+**🔧 重要说明**：交易所 API 密钥是通过前端界面配置的，**不需要在 `.env` 文件中配置**。`.env` 文件仅用于服务器运行配置。
 
 ```bash
 cd ~/wangge
+cp .env.example .env  # 如果有示例文件
+# 或者直接创建
 nano .env
 ```
 
-### 5.2 配置内容
+### 5.2 配置内容（仅服务器配置）
 
-**🔧 根据你的交易所选择以下配置之一：**
-
-#### 选项A：Binance 配置
+**🔧 `.env` 文件只需要配置服务器运行参数**：
 
 ```env
-# 交易所配置
-EXCHANGE_NAME=binance
-EXCHANGE_API_KEY=你的API密钥
-EXCHANGE_SECRET_KEY=你的密钥
-EXCHANGE_TESTNET=true
-
-# 服务器配置
+# 服务器配置（必填）
 API_HOST=0.0.0.0
 API_PORT=8000
 DEBUG=false
 LOG_LEVEL=INFO
 ```
 
-#### 选项B：Extended 配置
+**🔧 配置说明**：
+- `API_HOST`: 服务监听地址，通常为 `0.0.0.0`（允许外部访问）
+- `API_PORT`: 服务端口，默认 `8000`，如果端口被占用可以修改
+- `DEBUG`: 生产环境设置为 `false`，开发环境可以设置为 `true`
+- `LOG_LEVEL`: 日志级别，推荐 `INFO`，可选 `DEBUG`、`INFO`、`WARNING`、`ERROR`
 
-```env
-# 交易所配置
-EXCHANGE_NAME=extended
-EXCHANGE_API_KEY=你的API密钥
-EXCHANGE_SECRET_KEY=你的私钥
-EXCHANGE_PUBLIC_KEY=你的公钥
-EXCHANGE_VAULT=你的Vault ID
-EXCHANGE_TESTNET=true
-
-# 服务器配置
-API_HOST=0.0.0.0
-API_PORT=8000
-DEBUG=false
-LOG_LEVEL=INFO
-```
-
-**🔧 必须修改的内容**：
-- `EXCHANGE_API_KEY`: 替换为你的实际 API 密钥
-- `EXCHANGE_SECRET_KEY`: 替换为你的实际密钥
-- `EXCHANGE_PUBLIC_KEY`: Extended 需要，替换为你的公钥
-- `EXCHANGE_VAULT`: Extended 需要，替换为你的 Vault ID
-- `EXCHANGE_TESTNET`: `true` 为测试网，`false` 为主网
+**🔧 不需要配置的内容**（这些通过前端界面配置）：
+- ❌ `EXCHANGE_NAME` - 通过前端配置
+- ❌ `EXCHANGE_API_KEY` - 通过前端配置
+- ❌ `EXCHANGE_SECRET_KEY` - 通过前端配置
+- ❌ `EXCHANGE_PUBLIC_KEY` - 通过前端配置（Extended）
+- ❌ `EXCHANGE_VAULT` - 通过前端配置（Extended）
 
 保存文件：按 `Ctrl+O`，然后 `Enter`，再按 `Ctrl+X` 退出。
 
-### 5.3 设置文件权限（保护敏感信息）
+### 5.3 设置文件权限
 
 ```bash
 chmod 600 .env
@@ -220,30 +204,51 @@ chmod 600 .env
 
 ---
 
-## 第六步：配置交易所信息（如果使用 exchange_config.json）
+## 第六步：配置交易所信息（通过前端界面）
 
-### 6.1 编辑配置文件
+### 6.1 重要说明
+
+**🔧 交易所配置不需要手动创建文件**，系统会在首次通过前端界面配置时自动创建 `config/exchange_config.json`。
+
+### 6.2 配置步骤（在服务启动后）
+
+1. **启动服务**（见第七步）
+2. **访问前端界面**：`http://your-server-ip:8000`
+3. **点击"配置"标签页**
+4. **填写交易所信息**：
+   - 选择交易所类型（Binance 或 Extended）
+   - 填写 API 密钥
+   - 填写密钥/私钥
+   - 选择测试网/主网
+   - Extended 需要额外填写：公钥、Vault ID
+5. **点击"保存配置"**
+
+系统会自动将配置保存到 `config/exchange_config.json` 文件中。
+
+### 6.3 手动配置（可选，通常不需要）
+
+**🔧 如果需要在服务器上手动创建配置文件**（不推荐，建议使用前端界面）：
 
 ```bash
+# 从示例文件创建
+cp config/exchange_config.json.example config/exchange_config.json
 nano config/exchange_config.json
 ```
 
-### 6.2 配置内容示例
+配置内容示例：
 
 ```json
 {
   "binance_account": {
-    "name": "Binance测试账号",
+    "name": "binance",
     "account_key": "binance_account",
-    "exchange": "binance",
     "api_key": "你的API密钥",
     "secret_key": "你的密钥",
     "testnet": true
   },
   "extended_account": {
-    "name": "Extended测试账号",
+    "name": "extended",
     "account_key": "extended_account",
-    "exchange": "extended",
     "api_key": "你的API密钥",
     "private_key": "你的私钥",
     "public_key": "你的公钥",
@@ -253,11 +258,10 @@ nano config/exchange_config.json
 }
 ```
 
-**🔧 必须修改的内容**：
-- 所有 `你的API密钥`、`你的密钥` 等占位符
-- `vault` 的数值（Extended 需要）
-
-保存并退出。
+设置权限：
+```bash
+chmod 644 config/exchange_config.json
+```
 
 ---
 
