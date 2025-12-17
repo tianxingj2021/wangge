@@ -46,22 +46,14 @@ sudo apt install -y python3 python3-pip python3-venv git curl wget
 sudo yum install -y python3 python3-pip git curl wget
 ```
 
-### 1.4 创建专用用户（推荐）
+### 1.4 使用 root 用户
 
-为了安全，建议创建一个专用用户来运行服务：
-
-```bash
-# 创建用户（不需要设置密码，因为我们使用 sudo 切换）
-sudo useradd -m -s /bin/bash wangge
-
-# 切换到新用户
-sudo su - wangge
-```
+本部署指南使用 root 用户进行部署。如果服务器已配置 root 用户，直接使用即可。
 
 **重要说明**：
-- `sudo` 命令需要输入的是**当前登录用户的密码**，不是 `wangge` 用户的密码
-- 如果当前用户没有 sudo 权限，需要先配置 sudo 权限，或使用 root 用户
-- `wangge` 用户不需要设置密码，因为我们通过 `sudo` 来切换用户
+- 确保你已以 root 用户登录，或使用 `sudo su -` 切换到 root 用户
+- 如果使用 root 用户，执行命令时不需要加 `sudo` 前缀
+- 项目将部署在 `/root/wangge` 目录
 
 ---
 
@@ -82,21 +74,21 @@ cd wangge
 在本地机器上执行：
 
 ```bash
-scp -r /path/to/wangge user@server:/home/wangge/
+scp -r /path/to/wangge root@server:/root/
 ```
 
 然后在服务器上：
 
 ```bash
-cd ~/wangge
+cd /root/wangge
 ```
 
 ### 2.2 设置项目目录权限
 
 ```bash
-# 确保当前用户拥有项目目录
-sudo chown -R $USER:$USER ~/wangge
-chmod -R 755 ~/wangge
+# 确保 root 用户拥有项目目录
+chown -R root:root /root/wangge
+chmod -R 755 /root/wangge
 ```
 
 ---
@@ -106,7 +98,7 @@ chmod -R 755 ~/wangge
 ### 3.1 创建虚拟环境
 
 ```bash
-cd ~/wangge
+cd /root/wangge
 python3 -m venv venv
 ```
 
@@ -149,7 +141,7 @@ python -c "import fastapi, uvicorn; print('依赖安装成功')"
 **重要说明**：交易所 API 密钥是通过前端界面配置的，不需要在 `.env` 文件中配置。`.env` 文件仅用于服务器运行配置。
 
 ```bash
-cd ~/wangge
+cd /root/wangge
 cp .env.example .env  # 如果有示例文件
 # 或者直接创建
 nano .env
@@ -203,14 +195,10 @@ chmod 600 .env
 ### 5.1 创建 Systemd 服务文件
 
 ```bash
-sudo nano /etc/systemd/system/wangge.service
+nano /etc/systemd/system/wangge.service
 ```
 
-**重要提示**：
-- `sudo` 命令会要求输入密码，这里输入的是**当前登录用户的密码**，不是 `wangge` 用户的密码
-- 如果当前用户没有 sudo 权限，需要：
-  1. 使用 root 用户登录，或
-  2. 让管理员将当前用户添加到 sudo 组：`sudo usermod -aG sudo your_username`
+**注意**：使用 root 用户时，不需要 `sudo` 前缀。
 
 ### 5.2 服务文件内容
 
@@ -221,80 +209,76 @@ After=network.target
 
 [Service]
 Type=simple
-User=wangge
-Group=wangge
-WorkingDirectory=/home/wangge/wangge
-Environment="PATH=/home/wangge/wangge/venv/bin"
-ExecStart=/home/wangge/wangge/venv/bin/python /home/wangge/wangge/run.py
+User=root
+Group=root
+WorkingDirectory=/root/wangge
+Environment="PATH=/root/wangge/venv/bin"
+ExecStart=/root/wangge/venv/bin/python /root/wangge/run.py
 Restart=always
 RestartSec=10
 StandardOutput=journal
 StandardError=journal
 
-# 安全设置
-NoNewPrivileges=true
-PrivateTmp=true
-ProtectSystem=strict
-ProtectHome=read-only
-ReadWritePaths=/home/wangge/wangge/logs
+# 日志路径
+ReadWritePaths=/root/wangge/logs
 
 [Install]
 WantedBy=multi-user.target
 ```
 
-**注意**：请根据实际路径修改 `WorkingDirectory`、`User`、`Group` 和 `ExecStart`。
+**注意**：如果项目部署在其他路径，请修改 `WorkingDirectory` 和 `ExecStart` 中的路径。
 
 ### 5.3 重载 Systemd 配置
 
 ```bash
-sudo systemctl daemon-reload
+systemctl daemon-reload
 ```
 
 ### 5.4 启动服务
 
 ```bash
-sudo systemctl start wangge
+systemctl start wangge
 ```
 
 ### 5.5 设置开机自启
 
 ```bash
-sudo systemctl enable wangge
+systemctl enable wangge
 ```
 
 ### 5.6 检查服务状态
 
 ```bash
 # 查看服务状态
-sudo systemctl status wangge
+systemctl status wangge
 
 # 查看日志
-sudo journalctl -u wangge -f
+journalctl -u wangge -f
 
 # 查看最近100行日志
-sudo journalctl -u wangge -n 100
+journalctl -u wangge -n 100
 ```
 
 ### 5.7 常用服务管理命令
 
 ```bash
 # 启动服务
-sudo systemctl start wangge
+systemctl start wangge
 
 # 停止服务
-sudo systemctl stop wangge
+systemctl stop wangge
 
 # 重启服务
-sudo systemctl restart wangge
+systemctl restart wangge
 
 # 查看服务状态
-sudo systemctl status wangge
+systemctl status wangge
 
 # 禁用开机自启
-sudo systemctl disable wangge
+systemctl disable wangge
 
 # 启用开机自启
-sudo systemctl enable wangge
+systemctl enable wangge
 ```
 
 ---
@@ -316,7 +300,7 @@ sudo yum install -y nginx
 ### 6.2 创建 Nginx 配置文件
 
 ```bash
-sudo nano /etc/nginx/sites-available/wangge
+nano /etc/nginx/sites-available/wangge
 ```
 
 **HTTP 配置（开发/测试）：**
@@ -392,44 +376,44 @@ server {
 
 ```bash
 # 创建符号链接（Ubuntu/Debian）
-sudo ln -s /etc/nginx/sites-available/wangge /etc/nginx/sites-enabled/
+ln -s /etc/nginx/sites-available/wangge /etc/nginx/sites-enabled/
 
 # 或者直接复制到 sites-enabled（CentOS）
-sudo cp /etc/nginx/sites-available/wangge /etc/nginx/conf.d/wangge.conf
+cp /etc/nginx/sites-available/wangge /etc/nginx/conf.d/wangge.conf
 
 # 测试配置
-sudo nginx -t
+nginx -t
 
 # 重启 Nginx
-sudo systemctl restart nginx
+systemctl restart nginx
 ```
 
 ### 6.4 配置防火墙
 
 ```bash
 # Ubuntu/Debian (UFW)
-sudo ufw allow 80/tcp
-sudo ufw allow 443/tcp
-sudo ufw enable
+ufw allow 80/tcp
+ufw allow 443/tcp
+ufw enable
 
 # CentOS/RHEL (firewalld)
-sudo firewall-cmd --permanent --add-service=http
-sudo firewall-cmd --permanent --add-service=https
-sudo firewall-cmd --reload
+firewall-cmd --permanent --add-service=http
+firewall-cmd --permanent --add-service=https
+firewall-cmd --reload
 ```
 
 ### 6.5 使用 Let's Encrypt 获取 SSL 证书（HTTPS）
 
 ```bash
 # 安装 Certbot
-sudo apt install -y certbot python3-certbot-nginx  # Ubuntu/Debian
-sudo yum install -y certbot python3-certbot-nginx  # CentOS/RHEL
+apt install -y certbot python3-certbot-nginx  # Ubuntu/Debian
+yum install -y certbot python3-certbot-nginx  # CentOS/RHEL
 
 # 获取证书
-sudo certbot --nginx -d your-domain.com
+certbot --nginx -d your-domain.com
 
 # 自动续期测试
-sudo certbot renew --dry-run
+certbot renew --dry-run
 ```
 
 ---
@@ -438,33 +422,33 @@ sudo certbot renew --dry-run
 
 ### 7.1 查看应用日志
 
-应用日志保存在 `~/wangge/logs/` 目录：
+应用日志保存在 `/root/wangge/logs/` 目录：
 
 ```bash
 # 查看最新日志
-tail -f ~/wangge/logs/app_$(date +%Y-%m-%d).log
+tail -f /root/wangge/logs/app_$(date +%Y-%m-%d).log
 
 # 查看所有日志
-ls -lh ~/wangge/logs/
+ls -lh /root/wangge/logs/
 
 # 搜索错误
-grep -i error ~/wangge/logs/*.log
+grep -i error /root/wangge/logs/*.log
 ```
 
 ### 7.2 查看 Systemd 日志
 
 ```bash
 # 实时查看日志
-sudo journalctl -u wangge -f
+journalctl -u wangge -f
 
 # 查看最近100行
-sudo journalctl -u wangge -n 100
+journalctl -u wangge -n 100
 
 # 查看今天的日志
-sudo journalctl -u wangge --since today
+journalctl -u wangge --since today
 
 # 查看特定时间段的日志
-sudo journalctl -u wangge --since "2024-01-01 00:00:00" --until "2024-01-01 23:59:59"
+journalctl -u wangge --since "2024-01-01 00:00:00" --until "2024-01-01 23:59:59"
 ```
 
 ### 7.3 日志轮转（可选）
@@ -472,20 +456,20 @@ sudo journalctl -u wangge --since "2024-01-01 00:00:00" --until "2024-01-01 23:5
 创建日志轮转配置：
 
 ```bash
-sudo nano /etc/logrotate.d/wangge
+nano /etc/logrotate.d/wangge
 ```
 
 内容：
 
 ```
-/home/wangge/wangge/logs/*.log {
+/root/wangge/logs/*.log {
     daily
     rotate 30
     compress
     delaycompress
     missingok
     notifempty
-    create 0640 wangge wangge
+    create 0640 root root
     sharedscripts
 }
 ```
@@ -509,7 +493,7 @@ curl http://your-domain.com/health
 创建一个简单的监控脚本：
 
 ```bash
-nano ~/monitor_wangge.sh
+nano /root/monitor_wangge.sh
 ```
 
 内容：
@@ -527,18 +511,18 @@ if systemctl is-active --quiet $SERVICE; then
         echo "$(date): Health check passed"
     else
         echo "$(date): Health check failed, restarting service"
-        sudo systemctl restart $SERVICE
+        systemctl restart $SERVICE
     fi
 else
     echo "$(date): Service $SERVICE is not running, starting..."
-    sudo systemctl start $SERVICE
+    systemctl start $SERVICE
 fi
 ```
 
 设置执行权限：
 
 ```bash
-chmod +x ~/monitor_wangge.sh
+chmod +x /root/monitor_wangge.sh
 ```
 
 添加到 crontab（每5分钟检查一次）：
@@ -550,7 +534,7 @@ crontab -e
 添加：
 
 ```
-*/5 * * * * /home/wangge/monitor_wangge.sh >> /home/wangge/monitor.log 2>&1
+*/5 * * * * /root/monitor_wangge.sh >> /root/monitor.log 2>&1
 ```
 
 ### 8.3 资源监控
@@ -567,6 +551,8 @@ df -h
 
 # 查看网络连接
 netstat -tulpn | grep 8000
+# 或使用 ss 命令
+ss -tulpn | grep 8000
 ```
 
 ---
@@ -577,13 +563,13 @@ netstat -tulpn | grep 8000
 
 ```bash
 # 检查服务状态
-sudo systemctl status wangge
+systemctl status wangge
 
 # 查看详细错误日志
-sudo journalctl -u wangge -n 50 --no-pager
+journalctl -u wangge -n 50 --no-pager
 
 # 检查配置文件
-cd ~/wangge
+cd /root/wangge
 source venv/bin/activate
 python -c "from config.settings import get_settings; print(get_settings())"
 
@@ -595,9 +581,11 @@ python run.py
 
 ```bash
 # 检查端口占用
-sudo netstat -tulpn | grep 8000
+netstat -tulpn | grep 8000
 # 或
-sudo lsof -i :8000
+lsof -i :8000
+# 或使用 ss 命令
+ss -tulpn | grep 8000
 
 # 修改端口（在 .env 文件中）
 API_PORT=8001
@@ -607,7 +595,7 @@ API_PORT=8001
 
 ```bash
 # 重新安装依赖
-cd ~/wangge
+cd /root/wangge
 source venv/bin/activate
 pip install --upgrade -r requirements.txt
 ```
@@ -616,11 +604,11 @@ pip install --upgrade -r requirements.txt
 
 ```bash
 # 检查文件权限
-ls -la ~/wangge
+ls -la /root/wangge
 
-# 修复权限
-sudo chown -R wangge:wangge ~/wangge
-chmod 600 ~/wangge/.env
+# 修复权限（root 用户通常不需要）
+chown -R root:root /root/wangge
+chmod 600 /root/wangge/.env
 ```
 
 ### 9.5 网络连接问题
@@ -630,16 +618,16 @@ chmod 600 ~/wangge/.env
 curl https://api.binance.com/api/v3/ping
 
 # 检查防火墙
-sudo ufw status  # Ubuntu/Debian
-sudo firewall-cmd --list-all  # CentOS/RHEL
+ufw status  # Ubuntu/Debian
+firewall-cmd --list-all  # CentOS/RHEL
 ```
 
 ### 9.6 查看实时日志
 
 ```bash
 # 同时查看 systemd 日志和应用日志
-sudo journalctl -u wangge -f &
-tail -f ~/wangge/logs/app_$(date +%Y-%m-%d).log
+journalctl -u wangge -f &
+tail -f /root/wangge/logs/app_$(date +%Y-%m-%d).log
 ```
 
 ---
@@ -649,13 +637,13 @@ tail -f ~/wangge/logs/app_$(date +%Y-%m-%d).log
 ### 10.1 更新代码
 
 ```bash
-cd ~/wangge
+cd /root/wangge
 
 # 如果使用 Git
 git pull origin main
 
 # 或重新上传文件
-# scp -r /path/to/wangge user@server:/home/wangge/
+# scp -r /path/to/wangge root@server:/root/
 ```
 
 **注意**：如果仓库地址是 `https://github.com/tianxingj2021/wangge.git`，确保远程仓库已正确配置：
@@ -678,21 +666,21 @@ pip install --upgrade -r requirements.txt
 ### 10.3 重启服务
 
 ```bash
-sudo systemctl restart wangge
-sudo systemctl status wangge
+systemctl restart wangge
+systemctl status wangge
 ```
 
 ---
 
 ## 11. 安全建议
 
-1. **使用专用用户运行服务**：不要使用 root 用户
-2. **保护 .env 文件**：设置 `chmod 600 .env`
-3. **使用 HTTPS**：在生产环境配置 SSL 证书
-4. **配置防火墙**：只开放必要的端口
-5. **定期更新**：保持系统和依赖包更新
-6. **备份配置**：定期备份 `.env` 和 `exchange_config.json`
-7. **监控日志**：定期检查日志，发现异常及时处理
+1. **保护 .env 文件**：设置 `chmod 600 .env`
+2. **使用 HTTPS**：在生产环境配置 SSL 证书
+3. **配置防火墙**：只开放必要的端口
+4. **定期更新**：保持系统和依赖包更新
+5. **备份配置**：定期备份 `.env` 和 `exchange_config.json`
+6. **监控日志**：定期检查日志，发现异常及时处理
+7. **限制访问**：如果可能，使用防火墙限制 API 访问来源
 
 ---
 
@@ -701,7 +689,7 @@ sudo systemctl status wangge
 可以创建一个自动化部署脚本：
 
 ```bash
-nano ~/deploy_wangge.sh
+nano /root/deploy_wangge.sh
 ```
 
 内容：
@@ -736,13 +724,13 @@ fi
 chmod 600 .env
 
 echo "部署完成！"
-echo "请确保已配置 .env 文件，然后运行: sudo systemctl start wangge"
+echo "请确保已配置 .env 文件，然后运行: systemctl start wangge"
 ```
 
 设置执行权限：
 
 ```bash
-chmod +x ~/deploy_wangge.sh
+chmod +x /root/deploy_wangge.sh
 ```
 
 ---
