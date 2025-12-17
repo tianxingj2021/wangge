@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网格交易系统</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>网格交易系统</h1>
+            <nav>
+                <button class="nav-btn active" data-page="dashboard">仪表盘</button>
+                <button class="nav-btn" data-page="config">交易所配置</button>
+                <button class="nav-btn" data-page="strategy">策略管理</button>
+                <button class="nav-btn" data-page="order">订单管理</button>
+                <button class="nav-btn" data-page="account">账户信息</button>
+            </nav>
+            <button class="theme-toggle" id="theme-toggle" title="切换主题">
+                <span id="theme-icon">🌙</span>
+                <span id="theme-text">深色</span>
+            </button>
+        </header>
+
+        <main>
+            <!-- 仪表盘页面 -->
+            <div id="dashboard-page" class="page active">
+                <h2>仪表盘</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>运行中策略</h3>
+                        <p id="running-strategies">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>未成交订单</h3>
+                        <p id="open-orders">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>总资产</h3>
+                        <p id="total-balance">--</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 策略管理页面 -->
+            <div id="strategy-page" class="page">
+                <h2>策略管理</h2>
+                <div class="form-section">
+                    <h3>创建策略</h3>
+                    <form id="strategy-form">
+                        <div class="form-group">
+                            <label>执行交易所账号 *:</label>
+                            <select id="strategy-exchange" required>
+                                <option value="">请选择交易所账号</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>策略类型:</label>
+                            <select id="strategy-type" required onchange="onStrategyTypeChange()">
+                                <option value="">请选择策略类型</option>
+                            </select>
+                        </div>
+                        <div id="strategy-config-container">
+                            <!-- 动态生成的配置字段将显示在这里 -->
+                        </div>
+                        <div id="strategy-params-collapsible" style="display: none;">
+                            <div class="collapsible-header" onclick="toggleStrategyParams()">
+                                <span>策略参数配置</span>
+                                <span class="collapse-icon" id="collapse-icon">▼</span>
+                            </div>
+                            <div class="collapsible-content" id="strategy-params-content">
+                                <!-- 可选参数将显示在这里 -->
+                            </div>
+                        </div>
+                        <button type="submit">启动策略</button>
+                    </form>
+                </div>
+                <div class="strategy-list-section">
+                    <h3>运行中的策略</h3>
+                    <div id="strategy-list-container" class="strategy-list"></div>
+                </div>
+            </div>
+
+            <!-- 订单管理页面 -->
+            <div id="order-page" class="page">
+                <h2>订单管理</h2>
+                <div class="form-section">
+                    <h3>手动下单</h3>
+                    <form id="order-form">
+                        <div class="form-group">
+                            <label>交易对:</label>
+                            <input type="text" id="order-symbol" placeholder="BTC/USDT" required>
+                        </div>
+                        <div class="form-group">
+                            <label>方向:</label>
+                            <select id="order-side" required>
+                                <option value="buy">买入</option>
+                                <option value="sell">卖出</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>订单类型:</label>
+                            <select id="order-type" required>
+                                <option value="limit">限价单</option>
+                                <option value="market">市价单</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>数量:</label>
+                            <input type="number" id="order-quantity" step="0.0001" required>
+                        </div>
+                        <div class="form-group">
+                            <label>价格 (限价单):</label>
+                            <input type="number" id="order-price" step="0.01">
+                        </div>
+                        <button type="submit">下单</button>
+                    </form>
+                </div>
+                <div class="order-list-section">
+                    <h3>未成交订单</h3>
+                    <div id="order-list-container" class="order-list"></div>
+                </div>
+            </div>
+
+            <!-- 账户信息页面 -->
+            <div id="account-page" class="page">
+                <h2>账户信息</h2>
+                <div class="form-section">
+                    <button onclick="loadBalance()">刷新余额</button>
+                </div>
+                <div id="balance-container"></div>
+            </div>
+
+            <!-- 交易所配置页面 -->
+            <div id="config-page" class="page">
+                <h2>交易所配置</h2>
+                
+                <!-- 已配置的交易所卡片 -->
+                <div class="form-section">
+                    <h3>已配置的交易所</h3>
+                    <div id="configured-exchanges-container" class="exchange-cards-container"></div>
+                </div>
+                
+                <!-- 添加/编辑交易所配置表单 -->
+                <div class="form-section">
+                    <h3 id="config-form-title">添加新交易所</h3>
+                    <form id="exchange-config-form">
+                        <input type="hidden" id="editing-exchange-name" value="">
+                        <div class="form-group">
+                            <label>交易所:</label>
+                            <select id="exchange-name" required onchange="onExchangeChange()">
+                                <option value="">请选择交易所</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>账号别名:</label>
+                            <input type="text" id="exchange-account-alias" placeholder="例如：主账号、子账号1等（可选，不填将自动生成）">
+                            <small style="color: var(--text-secondary); font-size: 12px; display: block; margin-top: 5px;">用于区分同一交易所的多个账号，建议填写便于识别的名称</small>
+                        </div>
+                        <div class="form-group">
+                            <label>API密钥:</label>
+                            <input type="text" id="exchange-api-key" placeholder="请输入API密钥" required>
+                        </div>
+                        <div class="form-group">
+                            <label>密钥/私钥:</label>
+                            <input type="password" id="exchange-secret-key" placeholder="请输入密钥或私钥" required>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="exchange-testnet"> 使用测试网
+                            </label>
+                        </div>
+                        
+                        <!-- Extended交易所特定配置 -->
+                        <div id="extended-config" style="display: none;">
+                            <h4>Extended交易所额外配置</h4>
+                            <div class="form-group">
+                                <label>公钥 (Public Key):</label>
+                                <input type="text" id="exchange-public-key" placeholder="请输入公钥（十六进制）">
+                            </div>
+                            <div class="form-group">
+                                <label>私钥 (Private Key，如果与密钥不同):</label>
+                                <input type="password" id="exchange-private-key" placeholder="如果与密钥不同，请输入私钥">
+                            </div>
+                            <div class="form-group">
+                                <label>金库ID (Vault ID):</label>
+                                <input type="number" id="exchange-vault" placeholder="请输入金库ID">
+                            </div>
+                            <div class="form-group">
+                                <label>默认交易对:</label>
+                                <input type="text" id="exchange-default-market" placeholder="BTC-USD" value="BTC-USD">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <button type="button" onclick="testConnection()" style="background: #27ae60; margin-right: 10px;">测试连接</button>
+                            <button type="submit" id="save-config-btn">保存配置</button>
+                            <button type="button" onclick="cancelEdit()" id="cancel-edit-btn" style="display: none; background: #95a5a6; margin-left: 10px;">取消</button>
+                        </div>
+                    </form>
+                </div>
+                <div id="config-status" style="margin-top: 20px;"></div>
+            </div>
+        </main>
+
+        <div id="message" class="message"></div>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
+

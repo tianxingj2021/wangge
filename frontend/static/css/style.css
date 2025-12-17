@@ -1,0 +1,1008 @@
+/* CSS变量定义 - 明亮模式 */
+:root {
+    --bg-primary: #f5f5f5;
+    --bg-secondary: #ffffff;
+    --bg-tertiary: #f8f9fa;
+    --bg-hover: #e8f4f8;
+    --bg-hover-dark: #d4e8f0;
+    --text-primary: #333;
+    --text-secondary: #555;
+    --text-heading: #2c3e50;
+    --border-color: #e0e0e0;
+    --border-light: #ddd;
+    --shadow: rgba(0,0,0,0.1);
+    --shadow-hover: rgba(0,0,0,0.15);
+    --nav-bg: #ecf0f1;
+    --nav-bg-hover: #bdc3c7;
+    --nav-active: #3498db;
+    --btn-primary: #3498db;
+    --btn-primary-hover: #2980b9;
+    --btn-danger: #e74c3c;
+    --btn-danger-hover: #c0392b;
+    --btn-success: #27ae60;
+    --btn-success-hover: #229954;
+    --btn-secondary: #95a5a6;
+    --message-success: #2ecc71;
+    --message-error: #e74c3c;
+    --stat-card-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --collapse-bg: #e8f4f8;
+    --collapse-border: #3498db;
+    --collapse-hover: #d4e8f0;
+    --badge-mainnet: #2ecc71;
+    --badge-testnet: #f39c12;
+}
+
+/* CSS变量定义 - 黑暗模式 */
+.dark-mode {
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #2d2d2d;
+    --bg-tertiary: #252525;
+    --bg-hover: #3a3a3a;
+    --bg-hover-dark: #4a4a4a;
+    --text-primary: #e0e0e0;
+    --text-secondary: #b0b0b0;
+    --text-heading: #ffffff;
+    --border-color: #404040;
+    --border-light: #505050;
+    --shadow: rgba(0,0,0,0.3);
+    --shadow-hover: rgba(0,0,0,0.5);
+    --nav-bg: #3a3a3a;
+    --nav-bg-hover: #4a4a4a;
+    --nav-active: #5dade2;
+    --btn-primary: #5dade2;
+    --btn-primary-hover: #3498db;
+    --btn-danger: #ec7063;
+    --btn-danger-hover: #e74c3c;
+    --btn-success: #58d68d;
+    --btn-success-hover: #27ae60;
+    --btn-secondary: #7f8c8d;
+    --message-success: #58d68d;
+    --message-error: #ec7063;
+    --stat-card-gradient: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+    --collapse-bg: #3a3a3a;
+    --collapse-border: #5dade2;
+    --collapse-hover: #4a4a4a;
+    --badge-mainnet: #58d68d;
+    --badge-testnet: #f7dc6f;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.6;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.container {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* 策略管理页面特殊处理，让卡片充分利用空间 */
+#strategy-page .strategy-list-section {
+    width: 100%;
+}
+
+#strategy-page #strategy-list-container {
+    width: 100%;
+    max-width: 100%;
+}
+
+header {
+    background: var(--bg-secondary);
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px var(--shadow);
+    position: relative;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+header h1 {
+    margin-bottom: 15px;
+    color: var(--text-heading);
+    transition: color 0.3s ease;
+}
+
+nav {
+    display: flex;
+    gap: 10px;
+}
+
+.nav-btn {
+    padding: 10px 20px;
+    border: none;
+    background: var(--nav-bg);
+    color: var(--text-secondary);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.nav-btn:hover {
+    background: var(--nav-bg-hover);
+}
+
+.nav-btn.active {
+    background: var(--nav-active);
+    color: white;
+}
+
+/* 主题切换按钮 */
+.theme-toggle {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 8px 16px;
+    border: none;
+    background: var(--nav-bg);
+    color: var(--text-secondary);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.theme-toggle:hover {
+    background: var(--nav-bg-hover);
+}
+
+main {
+    background: var(--bg-secondary);
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px var(--shadow);
+    min-height: 500px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.page {
+    display: none;
+}
+
+.page.active {
+    display: block;
+}
+
+.page h2 {
+    margin-bottom: 20px;
+    color: var(--text-heading);
+    border-bottom: 2px solid var(--nav-active);
+    padding-bottom: 10px;
+    transition: color 0.3s ease, border-color 0.3s ease;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.stat-card {
+    background: var(--stat-card-gradient);
+    color: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    transition: background 0.3s ease;
+}
+
+.stat-card h3 {
+    font-size: 14px;
+    opacity: 0.9;
+    margin-bottom: 10px;
+}
+
+.stat-card p {
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.form-section {
+    background: var(--bg-tertiary);
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    transition: background-color 0.3s ease;
+}
+
+.form-section h3 {
+    margin-bottom: 15px;
+    color: var(--text-heading);
+    transition: color 0.3s ease;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--text-secondary);
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border-light);
+    border-radius: 4px;
+    font-size: 14px;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--nav-active);
+}
+
+button[type="submit"],
+button {
+    background: var(--btn-primary);
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.3s;
+}
+
+button[type="submit"]:hover,
+button:hover {
+    background: var(--btn-primary-hover);
+}
+
+/* 策略列表和订单列表容器 */
+.strategy-list-section,
+.order-list-section {
+    margin-top: 30px;
+}
+
+/* 策略卡片容器 */
+.strategy-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    width: 100%;
+    margin-top: 0;
+}
+
+/* 响应式布局：每行最多2个卡片，铺满页面宽度 */
+@media (min-width: 900px) {
+    .strategy-list {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+}
+
+/* 小屏幕单列显示 */
+@media (max-width: 899px) {
+    .strategy-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+.strategy-item,
+.order-item {
+    background: var(--bg-secondary);
+    padding: 0;
+    border-radius: 12px;
+    margin-bottom: 0;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 2px 8px var(--shadow);
+    border: 1px solid var(--border-color);
+    transition: box-shadow 0.3s ease, transform 0.2s ease;
+    overflow: hidden;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.strategy-item:hover {
+    box-shadow: 0 4px 12px var(--shadow-hover);
+    transform: translateY(-2px);
+}
+
+/* 策略卡片头部 */
+.strategy-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    background: var(--bg-tertiary);
+    border-bottom: 1px solid var(--border-color);
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+.strategy-card-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.strategy-symbol {
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--text-heading);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.account-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    background: var(--nav-active);
+    color: white;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.status-indicator.running {
+    background: rgba(46, 204, 113, 0.2);
+    color: #2ecc71;
+}
+
+.status-indicator.stopped {
+    background: rgba(149, 165, 166, 0.2);
+    color: #95a5a6;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.status-dot.running {
+    background: #2ecc71;
+    box-shadow: 0 0 4px rgba(46, 204, 113, 0.5);
+}
+
+.status-dot.stopped {
+    background: #95a5a6;
+}
+
+.strategy-item .actions,
+.order-item .actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+/* 策略卡片内容区 */
+.strategy-card-content {
+    padding: 20px;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+.strategy-item .info {
+    flex: 1;
+    width: 100%;
+}
+
+/* 关键指标网格 */
+.strategy-metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+    width: 100%;
+    min-width: 0;
+}
+
+.strategy-metric-item {
+    background: var(--bg-tertiary);
+    padding: 12px;
+    border-radius: 8px;
+    border-left: 3px solid var(--nav-active);
+}
+
+.strategy-metric-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+}
+
+.strategy-metric-value {
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--text-heading);
+}
+
+.strategy-metric-value.positive {
+    color: var(--btn-success);
+}
+
+.strategy-metric-value.negative {
+    color: var(--btn-danger);
+}
+
+/* 市场数据区 */
+.strategy-market-data {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 12px;
+    background: var(--bg-tertiary);
+    border-radius: 8px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.strategy-market-data-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.strategy-market-data-label {
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.strategy-market-data-value {
+    color: var(--text-heading);
+    font-weight: 600;
+}
+
+/* 订单摘要 */
+.order-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background: var(--bg-tertiary);
+    border-radius: 8px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.order-summary:hover {
+    background: var(--bg-hover);
+}
+
+.order-summary-content {
+    display: flex;
+    gap: 20px;
+    font-size: 13px;
+}
+
+.order-summary-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.order-summary-label {
+    color: var(--text-secondary);
+}
+
+.order-summary-value {
+    font-weight: 600;
+    color: var(--text-heading);
+}
+
+.order-summary-value.sell {
+    color: var(--btn-danger);
+}
+
+.order-summary-value.buy {
+    color: var(--btn-success);
+}
+
+.order-toggle {
+    color: var(--nav-active);
+    font-size: 12px;
+    user-select: none;
+}
+
+.order-toggle.collapsed::before {
+    content: '▶ ';
+}
+
+.order-toggle.expanded::before {
+    content: '▼ ';
+}
+
+/* 订单详情（可折叠） */
+.order-details {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+    margin-top: 0;
+}
+
+.order-details.expanded {
+    max-height: 800px;
+    opacity: 1;
+    margin-top: 12px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* 订单详情滚动条样式 */
+.order-details.expanded::-webkit-scrollbar {
+    width: 6px;
+}
+
+.order-details.expanded::-webkit-scrollbar-track {
+    background: var(--bg-tertiary);
+    border-radius: 3px;
+}
+
+.order-details.expanded::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 3px;
+}
+
+.order-details.expanded::-webkit-scrollbar-thumb:hover {
+    background: var(--text-secondary);
+}
+
+.order-table-container {
+    background: var(--bg-tertiary);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 12px;
+    min-width: 0;
+}
+
+.order-table-container:last-child {
+    margin-bottom: 0;
+}
+
+.order-table-title {
+    font-weight: 600;
+    color: var(--text-heading);
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.order-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    table-layout: fixed;
+}
+
+.order-table th {
+    text-align: left;
+    padding: 8px;
+    color: var(--text-secondary);
+    font-weight: 500;
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    background: var(--bg-tertiary);
+    z-index: 1;
+}
+
+.order-table th:first-child {
+    width: 60%;
+}
+
+.order-table th:last-child {
+    width: 40%;
+}
+
+.order-table td {
+    padding: 8px;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-light);
+    word-break: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.order-table tr:last-child td {
+    border-bottom: none;
+}
+
+.order-table tbody tr:hover {
+    background: var(--bg-hover);
+}
+
+.order-table .price {
+    font-weight: 600;
+    color: var(--text-heading);
+}
+
+.order-table .quantity {
+    color: var(--text-secondary);
+}
+
+/* 持仓信息 */
+.position-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    background: var(--bg-tertiary);
+    border-radius: 8px;
+    margin-bottom: 16px;
+}
+
+.position-direction {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.position-direction.long {
+    background: rgba(46, 204, 113, 0.2);
+    color: #2ecc71;
+}
+
+.position-direction.short {
+    background: rgba(231, 76, 60, 0.2);
+    color: #e74c3c;
+}
+
+.position-direction.none {
+    background: rgba(149, 165, 166, 0.2);
+    color: #95a5a6;
+}
+
+.btn-small {
+    padding: 6px 12px;
+    font-size: 12px;
+}
+
+.btn-danger {
+    background: var(--btn-danger);
+}
+
+.btn-danger:hover {
+    background: var(--btn-danger-hover);
+}
+
+.btn-success {
+    background: var(--btn-success);
+}
+
+.btn-success:hover {
+    background: var(--btn-success-hover);
+}
+
+.message {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 20px;
+    border-radius: 4px;
+    display: none;
+    z-index: 1000;
+    min-width: 200px;
+}
+
+.message.success {
+    background: var(--message-success);
+    color: white;
+    display: block;
+}
+
+.message.error {
+    background: var(--message-error);
+    color: white;
+    display: block;
+}
+
+#balance-container {
+    margin-top: 20px;
+}
+
+.balance-item {
+    background: var(--bg-tertiary);
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 1px 3px var(--shadow);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.balance-item .currency {
+    font-weight: bold;
+    color: var(--text-heading);
+    font-size: 18px;
+    transition: color 0.3s ease;
+}
+
+.balance-item .amount {
+    text-align: right;
+}
+
+.balance-item .amount div {
+    margin-bottom: 8px;
+    color: var(--text-secondary);
+    font-size: 14px;
+    transition: color 0.3s ease;
+}
+
+.balance-item .amount div:last-child {
+    margin-bottom: 0;
+}
+
+.balance-item .amount strong {
+    color: var(--btn-success);
+    font-size: 16px;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+/* 交易所卡片样式 */
+.exchange-cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.exchange-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px var(--shadow);
+    transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.exchange-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px var(--shadow-hover);
+}
+
+.exchange-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+    transition: border-color 0.3s ease;
+}
+
+.exchange-card-header h4 {
+    margin: 0;
+    color: var(--text-heading);
+    font-size: 18px;
+    transition: color 0.3s ease;
+}
+
+.exchange-badge {
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.exchange-badge.mainnet {
+    background: var(--badge-mainnet);
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+.exchange-badge.testnet {
+    background: var(--badge-testnet);
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+.exchange-card-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+/* 余额卡片样式 */
+.balance-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px var(--shadow);
+    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.balance-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+    transition: border-color 0.3s ease;
+}
+
+.balance-card-header h3 {
+    margin: 0;
+    color: var(--text-heading);
+    font-size: 20px;
+    transition: color 0.3s ease;
+}
+
+.balance-card-content {
+    margin-top: 15px;
+}
+
+.balance-summary {
+    background: var(--bg-tertiary);
+    padding: 15px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-around;
+    border-left: 4px solid var(--nav-active);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.balance-summary div {
+    text-align: center;
+}
+
+.balance-summary strong {
+    color: var(--text-heading);
+    font-size: 18px;
+    display: block;
+    margin-top: 5px;
+    transition: color 0.3s ease;
+}
+
+.balance-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.balance-item {
+    background: var(--bg-tertiary);
+    padding: 15px;
+    border-radius: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    transition: background-color 0.3s ease;
+}
+
+.balance-currency {
+    font-weight: bold;
+    color: var(--text-heading);
+    font-size: 16px;
+    min-width: 100px;
+    transition: color 0.3s ease;
+}
+
+.balance-amounts {
+    text-align: right;
+    flex: 1;
+}
+
+.balance-amounts div {
+    margin-bottom: 6px;
+    color: var(--text-secondary);
+    font-size: 14px;
+    transition: color 0.3s ease;
+}
+
+.balance-amounts div:last-child {
+    margin-bottom: 0;
+}
+
+.balance-amounts strong {
+    color: var(--btn-success);
+    font-size: 16px;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+/* 策略参数折叠样式 */
+.collapsible-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    background: var(--collapse-bg);
+    border: 1px solid var(--collapse-border);
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    user-select: none;
+    transition: background 0.3s, border-color 0.3s ease;
+}
+
+.collapsible-header:hover {
+    background: var(--collapse-hover);
+}
+
+.collapsible-header span:first-child {
+    font-weight: 500;
+    color: var(--text-heading);
+    transition: color 0.3s ease;
+}
+
+.collapse-icon {
+    transition: transform 0.3s, color 0.3s ease;
+    color: var(--collapse-border);
+    font-size: 12px;
+}
+
+.collapsible-header.collapsed .collapse-icon {
+    transform: rotate(-90deg);
+}
+
+.collapsible-content {
+    max-height: 2000px;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out, opacity 0.2s ease-out, padding 0.3s ease-out;
+    opacity: 1;
+    padding: 0 15px 15px 15px;
+}
+
+.collapsible-content.collapsed {
+    max-height: 0;
+    opacity: 0;
+    padding: 0 15px;
+}
+
